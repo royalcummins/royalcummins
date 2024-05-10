@@ -1,0 +1,91 @@
+PLL CODE:
+module pll(
+input clk_in1,
+input reset,
+output clk_out1,
+input locked
+);
+clk_wiz_0 instance_name
+(.clk_out1(clk_out1),
+.reset(reset),
+.locked(locked),
+.clk_in1(clk_in1));
+endmodule
+PLL TESTBENCH:
+module pll_tb();
+reg clk_in1;
+reg reset;
+wire clk_out1;
+reg locked;
+ pll uut(.clk_in1(clk_in1),.reset(reset),.clk_out1(clk_out1),.locked(locked));
+always #5 clk_in1 = ~clk_in1;
+initial begin
+clk_in1 = 0;
+locked =0;
+reset=0;
+#1
+reset=1;
+#1
+reset=0;
+#1 locked=1;
+end
+endmodule
+COUNTER CODE:
+module counter(
+// Inputs
+input clk_in1,locked,reset,
+output reg [3:0] count
+
+);
+wire clk_out1;
+pll uut(
+.clk_in1(clk_in1),
+.reset(reset),.clk_out1(clk_out1),.locked(locked));
+always @ (posedge clk_out1 or posedge reset) begin
+if (reset == 1'b1) begin
+count <= 0;
+end else begin
+case (count) // Gray code state
+4'b0000: #1 count <= 4'b0001; // 0
+4'b0001: #1 count <= 4'b0010; // 1
+4'b0010: #1 count <= 4'b0011; // 2
+4'b0011: #1 count <= 4'b0100; // 3
+4'b0100: #1 count <= 4'b0101; // 4
+4'b0101: #1 count <= 4'b0110; // 5
+4'b0110: #1 count <= 4'b0111; // 6
+4'b0111: #1 count <= 4'b1000; // 7
+4'b1000: #1 count <= 4'b1001; // 8
+4'b1001: #1 count <= 4'b1010; // 9
+4'b1010: #1 count <= 4'b1011; // 10
+4'b1011: #1 count <= 4'b1100; // 11
+4'b1100: #1 count <= 4'b1101; // 12
+4'b1101: #1 count <= 4'b1110; // 13
+4'b1110: #1 count <= 4'b1111; // 14
+4'b1111: #1 count <= 4'b0000; // 15
+default: #1 count <= 4'b0000;
+endcase
+end
+end
+
+endmodule
+COUNTER TESTBENCH:
+module counter_pll();
+reg clk_in1;
+reg reset;
+wire [3:0] count;
+reg locked;
+
+counter uut(.clk_in1(clk_in1),.reset(reset),.count(count),.locked(locked));
+always #5 clk_in1 = ~clk_in1;
+initial begin
+clk_in1 = 0;
+locked =0;
+reset=0;
+#1
+reset=1;
+#1
+reset=0;
+#15
+locked=1;
+end
+endmodule
