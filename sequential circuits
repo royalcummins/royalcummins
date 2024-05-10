@@ -1,0 +1,51 @@
+CODE:
+Non-blocking:
+module NBDFF(D, Clock, Q1, Q2);
+input D,Clock;
+output Q1,Q2;
+reg Q1, Q2;
+always @(posedge Clock)
+begin
+// non-blocking assignment - series
+Q1< = D;
+Q2< = Q1;
+end
+endmodule
+TEST BENCH:
+module nbffd_tb();
+reg D,clk;
+wire Q1,Q2;
+NBDFF cwd(D, clk, Q1, Q2);
+always #10clk =~clk ;
+initial
+begin
+clk=0;
+#10
+D=1'b0;
+#50 $finish;
+end
+Blocking :
+module BDFF(D, Clock, Q1, Q2);
+input D,Clock;
+output Q1,Q2;
+reg Q1, Q2;
+always @(posedge Clock)
+begin
+// blocking assignment - series
+Q1 = D;
+Q2 = Q1;
+end
+endmodule
+Testbench:
+module bffd_tb();
+reg D,clk;
+wire Q1,Q2;
+BDFF cwd(D, clk, Q1, Q2);
+always #10clk =~clk ;
+initial
+begin
+clk=0;
+#10
+D=1'b0;
+#50 $finish;
+end
