@@ -1,0 +1,46 @@
+FULL ADDER:
+module Adder_2(
+ input a,
+ input b,
+ input c,
+ output sum,
+ output carry
+ );
+ reg sum,carry;4
+ always @(a or b or c)
+ begin
+ sum <= a^b^c;
+ carry <= (a&b) | (b&c) | (a&c);
+ end
+endmodule
+module Full_Adder(
+ input [3:0] A,B,
+ input Cin,
+ output [3:0] Sum,
+ output cout
+ );
+ wire c1,c2,c3;
+ Adder_2 fa0(A[0],B[0],Cin,Sum[0],c1);
+ Adder_2 fa1(A[1],B[1],c1,Sum[1],c2);
+ Adder_2 fa2(A[2],B[2],c2,Sum[2],c3);
+ Adder_2 fa3(A[3],B[3],c3,Sum[3],cout);
+Endmodule
+TESTBENCH
+module Full_Adder_tb();
+ reg[3:0] a;
+ reg[3:0] b;
+ reg cin;
+ wire[3:0] sum;
+ wire cout;
+ Full_Adder uut(a,b,cin,sum,cout);
+ initial
+ begin
+ a=4'b0001;
+ b=4'b0000;
+ cin=1'b1;
+ #10
+ a=4'b0011; b=4'b0000; cin=1'b1;
+ #10
+ $finish;
+ end
+endmodule
