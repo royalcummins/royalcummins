@@ -1,0 +1,47 @@
+CODE:
+module threebitcomp(
+input [2:0]A,B, output reg A_grt_B,A_less_B,A_eq_B );
+always@(*)
+begin
+if(A>B) begin
+A_grt_B=1’b1;
+A_less_B=1’b0;
+A_eq_B=1’b0;
+ end
+ else if(A<B) begin
+A_grt_B=1’b0;
+A_less_B=1’b1;
+A_eq_B=1’b0;
+ end
+ else begin
+A_grt_B=1’b0;
+A_less_B=1’b0;
+A_eq_B=1’b1;
+ end
+ end
+ endmodule
+ TEST BENCH:
+module 3bitcomptb();
+reg[2:0] A;
+reg[2:0] B;
+wire A_grt_B,A_less_B,A_eq_B;
+threebitcomp z(.A(A), .B(B),. A_grt_B(A_grt_B), .A_less_B(A_less_B), A_eq_B(A_eq_B));
+initial begin
+A=3’b000;
+B=3’b000;
+#10
+A=3’b000;
+B=3’b000;
+#10
+A=3’b000;
+B=3’b001;
+#10
+A=3’b110;
+B=3’b001;
+#10
+A=3’b010;
+B=3’b110;
+#10
+$finish;
+end
+endmodule
