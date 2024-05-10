@@ -1,0 +1,21 @@
+FULL ADDER:
+module fulladder( input a,b,c,clk, output reg s,cy);
+always @(posedge clk)
+begin
+{cy , s}= a+b+c;
+end
+endmodule
+TESTBENCH:
+module fourbitaddertb();
+reg [3:0]a,b; reg c,clk; wire [3:0]s; wire cy;
+fourbitadder cwd( a,b,c,clk,s,cy);
+always #10 clk= ~clk;
+initial begin
+clk=0;
+#10;
+a=4’b1010;b=4’b0010;c=1’b0;
+#100
+a=4’b1101;b=4’b0011;c=1’b1;
+#100 $finish;
+end
+endmodule
